@@ -66,21 +66,21 @@
     </item>
     <item
         is-multidex="false"
-        jar="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="24.0.1"
-        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
-        <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.4.0_3740778bef5b87d0dd00cf063149d7fd286c7b23.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="C:\Users\kwonga\.gradle\caches\modules-2\files-2.1\javax.inject\javax.inject\1\6975da39a7040257bd51d21a231b76c915872d38\javax.inject-1.jar"
         jumboMode="false"
         optimize="true"
         revision="24.0.1"
         sha1="6975da39a7040257bd51d21a231b76c915872d38">
         <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\androidTest\debug\javax.inject-1_77449655c29fb314b1d26703e2ad06953b467b86.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="24.0.1"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.4.0_3740778bef5b87d0dd00cf063149d7fd286c7b23.jar" />
     </item>
     <item
         is-multidex="false"
@@ -134,7 +134,7 @@
         optimize="true"
         revision="24.0.1"
         sha1="a890ee8445927649d9ed50f625a315d8758688be">
-        <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\androidTest\debug\com.android.support.test.espresso-espresso-idling-resource-2.2.2_1b1b6c37a9cf92ec4f9ea4e0d4de277ed6fd6b85.jar" />
+        <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\debug\com.android.support.test.espresso-espresso-idling-resource-2.2.2_1b1b6c37a9cf92ec4f9ea4e0d4de277ed6fd6b85.jar" />
     </item>
     <item
         is-multidex="false"
@@ -306,6 +306,15 @@
         revision="24.0.1"
         sha1="fbf8da429efd5ad21e02e3e5ecaa1efc4167878d">
         <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\debug\internal_impl-24.2.1_e1e0418bb21488449304b1ea17ff9a3d2b7c29a3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\exploded-aar\com.android.support.test.espresso\espresso-idling-resource\2.2.2\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.1"
+        sha1="a890ee8445927649d9ed50f625a315d8758688be">
+        <dex dex="C:\Users\kwonga\Downloads\mpetest\mpetest\app\build\intermediates\pre-dexed\debug\com.android.support.test.espresso-espresso-idling-resource-2.2.2_1b1b6c37a9cf92ec4f9ea4e0d4de277ed6fd6b85.jar" />
     </item>
     <item
         is-multidex="false"

@@ -15,14 +15,14 @@ import java.io.IOException;
  * Created by niev on 10/6/2016.
  */
 
-public class Player implements MediaPlayer.OnPreparedListener {
+public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListener {
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
     private MediaPlayer mediaPlayer;
     private int mid;
     private int start;
     private int end;
-    private int track;
+    private int track = 0;
     private int totalTracks;
     private MediaPlayer.TrackInfo trackInfo[];
     private Context context;
@@ -82,6 +82,7 @@ public class Player implements MediaPlayer.OnPreparedListener {
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        Log.v(TAG, "in on prepared");
         if (mediaPlayer == this.mediaPlayer) {
             try {
                 mediaPlayer.start();
@@ -154,7 +155,7 @@ public class Player implements MediaPlayer.OnPreparedListener {
     public void trackUp() {
 
         Log.v(TAG, "Lenght of track info:" + Integer.toString(getTotalTracks()));
-        if(trackInfo[track].MEDIA_TRACK_TYPE_SUBTITLE == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_SUBTITLE){
+        if(trackInfo[track].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_SUBTITLE){
             mediaPlayer.deselectTrack(track);
         }
         track++;
@@ -214,4 +215,5 @@ public class Player implements MediaPlayer.OnPreparedListener {
     public void pause() {
         mediaPlayer.pause();
     }
+
 }

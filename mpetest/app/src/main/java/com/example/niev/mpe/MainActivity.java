@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (selected = menuItem.getItemId()) {
             case R.id.nav_vod:
-                setFragment(new VodFragment(), Integer.toString(selected));
+                //setFragment(new VodFragment(), "vod_frag");
                 break;
             case R.id.nav_aod:
-                setFragment(new AodFragment(), Integer.toString(selected));
+                //setFragment(new AodFragment(), "aod_frag");
                 break;
             default:
         }
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void setFragment(Fragment fragment, String tag) {
+    public void setFragment(Fragment fragment, String tag) {
         // Insert fragment and replace any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.frame, fragment, tag).commit();

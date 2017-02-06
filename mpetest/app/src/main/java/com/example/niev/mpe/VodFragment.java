@@ -1,6 +1,7 @@
 package com.example.niev.mpe;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +12,17 @@ import android.view.SurfaceView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+
 public class VodFragment extends Fragment implements SurfaceHolder.Callback, View.OnClickListener {
     private final String TAG = "VodFragment";
     private Player player;
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
+    public SurfaceView surfaceView;
+    public SurfaceHolder surfaceHolder;
     private TextView trackText;
     private TextView channelText;
     private TextView language;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,11 +36,12 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
         player = new Player(getActivity().getApplicationContext(), 1001, 1005);
 
         surfaceView = (SurfaceView) v.findViewById(R.id.surfaceView);
-        surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(this);
+        //surfaceHolder = surfaceView.getHolder();
+        //surfaceHolder.addCallback(this);
 
         ViewGroup viewGroup = (ViewGroup) v.findViewById(R.id.linearLayout);
         setButtonListeners(viewGroup);
+
 
         return v;
     }
@@ -101,9 +106,9 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Log.d(TAG, "Surface created");
-        player.setHolder(surfaceHolder);
-        player.play();
-        setInfo();
+        //player.setHolder(surfaceHolder);
+        //player.play();
+        //setInfo();
     }
 
     @Override
@@ -131,4 +136,5 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
         player.release();
         player = null;
     }
+
 }
