@@ -2,6 +2,7 @@ package com.example.niev.mpe;
 
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Random;
 
 import static android.os.SystemClock.sleep;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -39,43 +42,63 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @SmallTest
 public class VodTest {
     private static final String TAG = VodTest.class.getSimpleName();
-        private MainActivity mMainActivity;
+    private static int TEST_SETUP = 1;  //1 = emulator,tablet 0 = rack
+    private static String URI_MID = "1001";
+    private static String URI_VOD = "pac_rtsp://mid:" + URI_MID;
+
+
+    private MainActivity mMainActivity;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule(MainActivity.class);
 
     @Before
     public void initMainActivity(){
-        Log.v(TAG, "in before");
         mMainActivity = mActivityTestRule.getActivity();
+    }
+
+    @After
+    public void releasePlayer(){
+        mediaPlayer.release();
     }
 
     @Test
     public void playVODTest() throws Exception {
         SurfaceHolder mSurfaceHolder;
-
-
+        int random_play_time;
         VodFragment vodFragment = new VodFragment();
         mMainActivity.setFragment(vodFragment, "nav_vod");
-
         Thread.sleep(1000);
         mSurfaceHolder = vodFragment.surfaceView.getHolder();
+        Random random = new Random(System.currentTimeMillis());
 
         try {
-            MediaPlayer mediaPlayer = new MediaPlayer();
 
-            String path = "/sdcard/Download/test_320_audio.mp4";
-            File file = new File(path);
-            file.setReadable(true, false);
-            FileInputStream fileInputStream = new FileInputStream(file);
             mediaPlayer.setDisplay(mSurfaceHolder);
-            mediaPlayer.setDataSource(fileInputStream.getFD());
-            fileInputStream.close();
 
+            if(TEST_SETUP == 1) {
+                String path = "/sdcard/Download/test_320_audio.mp4";
+                File file = new File(path);
+                file.setReadable(true, false);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                mediaPlayer.setDataSource(fileInputStream.getFD());
+                fileInputStream.close();
+            } else {
+                setupPlayer("VOD");
+            }
 
             mediaPlayer.setScreenOnWhilePlaying(true);
             mediaPlayer.prepare();
             mediaPlayer.start();
+            assertTrue(mediaPlayer.isPlaying());
+
+            for(int i=0; i < 10 ; i++){
+                random_play_time = random.nextInt(70);
+                Log.v(TAG, "Random Number Generator:" + random_play_time);
+                mediaPlayer.seekTo(random_play_time*1000);
+                assert
+            }
             mediaPlayer.seekTo(1000);
             Thread.sleep(50000);
 
@@ -86,8 +109,19 @@ public class VodTest {
 
     }
 
-    private void setupVODPlayer(MediaPlayer mp){
-
+    private void setupPlayer(String state){
+        switch(state) {
+            case "VOD":
+                try {
+                    mediaPlayer.setDataSource(mMainActivity.getApplicationContext(), Uri.parse(URI_VOD));
+                    break;
+                }
+                catch(Exception e){
+                    Log.v(TAG, e.toString());
+                }
+            default:
+                throw new IllegalArgumentException("Invalid state selection for VOD player");
+        }
     }
 
 
