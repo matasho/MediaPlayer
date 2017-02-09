@@ -55,6 +55,7 @@ public class VodTest {
         mediaPlayer.release();
     }
 
+
     @Test
     public void playVODSeekTest() throws Exception {
         SurfaceHolder mSurfaceHolder;
@@ -80,6 +81,12 @@ public class VodTest {
             mediaPlayer.start();
             assertTrue(mediaPlayer.isPlaying());
 
+            Thread.sleep(1000);
+            Log.v(TAG, "Video Height: " + Integer.toString(mediaPlayer.getVideoHeight()));
+            Log.v(TAG, "Video Width: " + Integer.toString(mediaPlayer.getVideoWidth()));
+            assertTrue("Assertion Error: Wrong video height", mediaPlayer.getVideoHeight() >= 240);
+            assertTrue("Assertion Error: Wrong video width", mediaPlayer.getVideoWidth() >= 320);
+
 
             for(int i=0; i < 10 ; i++){
                 if(TEST_SETUP == 1)
@@ -88,14 +95,13 @@ public class VodTest {
                     random_play_time = random.nextInt(mediaPlayer.getDuration()/1000);
                 Log.v(TAG, "Random Number Generator:" + random_play_time);
                 mediaPlayer.seekTo(random_play_time*1000);
-                Thread.sleep(5000);
+                Thread.sleep(1000);
                 assertTrue("Assertion Error: seekTo with current position: " + mediaPlayer.getCurrentPosition() + " random play time: " + (random_play_time*1000), mediaPlayer.getCurrentPosition() >= (random_play_time*1000));
             }
 
-            Log.v(TAG, "Video Height: " + Integer.toString(mediaPlayer.getVideoHeight()));
-            Log.v(TAG, "Video Width: " + Integer.toString(mediaPlayer.getVideoWidth()));
-            assertTrue("Assertion Error: Wrong video height", mediaPlayer.getVideoHeight() >= 240);
-            assertTrue("Assertion Error: Wrong video width", mediaPlayer.getVideoWidth() >= 320);
+            mediaPlayer.stop();
+            assertFalse(mediaPlayer.isPlaying());
+
 
         } catch(Exception e){
             Log.v(TAG, e.toString());
