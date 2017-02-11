@@ -16,12 +16,14 @@ import java.io.IOException;
  */
 
 public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListener {
-    private static final int TEST_SETUP = 0;
+    private static final int TEST_SETUP = 1;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
     private static String URI_BCV = "pac_rtp://";
     private static String URI_BCA = "pac_rtp://audio:";
     private static String URI_BCV_CHANNEL = "pac_rtp://video:";
+    private static final String URI_FILEPLAY = "pac_rtp://file:test.mpg";
+    private static final String URI_HDMI = "pac_rtp://hdmi";
     private MediaPlayer mediaPlayer;
     private int mid;
     private int start;
@@ -87,6 +89,10 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
                     mediaPlayer.setDataSource(context, Uri.parse(URI_BCV_CHANNEL + mid));
                 else if(type.equals("bcaChan"))
                     mediaPlayer.setDataSource(context, Uri.parse(URI_BCA + mid));
+                else if(type.equals("file"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI_FILEPLAY));
+                else if(type.equals("hdmi"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI_HDMI));
 
             }
         } catch (Exception e) {

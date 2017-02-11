@@ -22,5 +22,8 @@
         <item
             android:id="@+id/nav_file"
             android:title="BCV-Chan" />
+        <item
+            android:id="@+id/nav_hdmi"
+            android:title="HDMI" />
     </group>
 </menu>

@@ -80,6 +80,10 @@ public class MainActivity extends AppCompatActivity
                     type = "file";
                     setFragment(new VodFragment(), type);
                     break;
+                case R.id.nav_hdmi:
+                    type = "hdmi";
+                    setFragment(new VodFragment(), type);
+                    break;
                 default:
             }
             menuItem.setChecked(true);
