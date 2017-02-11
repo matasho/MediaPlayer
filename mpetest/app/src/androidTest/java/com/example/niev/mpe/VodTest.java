@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Random;
 
 
 import static org.junit.Assert.*;
@@ -36,7 +35,12 @@ public class VodTest {
     private static final String TAG = VodTest.class.getSimpleName();
     private static int TEST_SETUP = 0;  //1 = emulator,tablet 0 = rack
     private static String URI_MID = "1001";
-    private static String URI_VOD = "pac_rtsp://mid:" + URI_MID;
+    private static String URI_AVOD = "pac_rtsp://mid:";
+
+    private static String URI_BCV_CHANNEL = "5";
+    private static String URI_BCV = "pac_rtp://video:" + URI_BCV_CHANNEL;
+
+    private static String URI_AOD_MID = "21001";
 
 
     private MainActivity mMainActivity;
@@ -55,6 +59,46 @@ public class VodTest {
         mediaPlayer.release();
     }
 
+    @Test
+    public void playBCVTest() throws Exception {
+        if(TEST_SETUP == 0){
+            SurfaceHolder mSurfaceHolder;
+            MediaPlayer.TrackInfo[] trackinfo;
+
+            VodFragment vodFragment = new VodFragment();
+            mMainActivity.setFragment(vodFragment, "nav_vod");
+            Thread.sleep(3000);
+            mSurfaceHolder = vodFragment.surfaceView.getHolder();
+            try {
+
+                mediaPlayer.setDisplay(mSurfaceHolder);
+
+                setupPlayer("BCV");
+
+                mediaPlayer.setScreenOnWhilePlaying(true);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                trackinfo = mediaPlayer.getTrackInfo();
+                assertTrue("Assertion Error: Number of tracks 0", trackinfo.length > 0);
+
+                for(int i = 0; i < trackinfo.length; i++){
+                    Log.v(TAG, "TrackInfo: " + Integer.toString(trackinfo[i].getTrackType()));
+                    if(trackinfo[i].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO){
+                        mediaPlayer.selectTrack(i);
+                    }
+                    else if(trackinfo[i].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_SUBTITLE){
+                        mediaPlayer.deselectTrack(i);
+                        mediaPlayer.selectTrack(i);
+                    }
+                    Thread.sleep(5000);
+                }
+
+            } catch(Exception e){
+                Log.v(TAG, e.toString());
+            }
+        }
+    }
+/*
 
     @Test
     public void playVODSeekTest() throws Exception {
@@ -111,6 +155,7 @@ public class VodTest {
 
     @Test
     public void playVODTrackTest() throws Exception{
+
         SurfaceHolder mSurfaceHolder;
         MediaPlayer.TrackInfo[] trackinfo;
 
@@ -149,7 +194,6 @@ public class VodTest {
         } catch(Exception e){
             Log.v(TAG, e.toString());
         }
-
     }
 
     @Test
@@ -187,12 +231,14 @@ public class VodTest {
         }
 
     }
+*/
+
 
     private void setupPlayer(String state){
         switch(state) {
             case "VOD":
                 try {
-                    mediaPlayer.setDataSource(mMainActivity.getApplicationContext(), Uri.parse(URI_VOD));
+                    mediaPlayer.setDataSource(mMainActivity.getApplicationContext(), Uri.parse(URI_AVOD +URI_MID));
                 }
                 catch(Exception e){
                     Log.v(TAG, e.toString());
@@ -207,6 +253,22 @@ public class VodTest {
                     mediaPlayer.setDataSource(fileInputStream.getFD());
                     fileInputStream.close();
                 } catch(Exception e){
+                    Log.v(TAG, e.toString());
+                }
+                break;
+            case "BCV":
+                try {
+                    mediaPlayer.setDataSource(mMainActivity.getApplicationContext(), Uri.parse(URI_BCV));
+                }
+                catch(Exception e){
+                    Log.v(TAG, e.toString());
+                }
+                break;
+            case "AOD":
+                try {
+                    mediaPlayer.setDataSource(mMainActivity.getApplicationContext(), Uri.parse(URI_AVOD+URI_AOD_MID ));
+                }
+                catch(Exception e){
                     Log.v(TAG, e.toString());
                 }
                 break;

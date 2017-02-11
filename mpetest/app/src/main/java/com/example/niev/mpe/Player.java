@@ -16,8 +16,12 @@ import java.io.IOException;
  */
 
 public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListener {
+    private static final int TEST_SETUP = 0;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
+    private static String URI_BCV = "pac_rtp://";
+    private static String URI_BCA = "pac_rtp://audio:";
+    private static String URI_BCV_CHANNEL = "pac_rtp://video:";
     private MediaPlayer mediaPlayer;
     private int mid;
     private int start;
@@ -29,6 +33,7 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
     private boolean stopped;
     /*subtitle test check*/
     private boolean subFlag = false;
+    private String mPlayType;
 
     /*ffwd / rewind flag */
     private String seekState;
@@ -53,26 +58,37 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
     };
 
 
-    Player(Context context, int start, int end) {
+    Player(Context context, int start, int end, String broadcast, String type) {
         this.start = start;
         this.end = end;
         mid = start;
+        mPlayType = type;
         track = 0;
         stopped = true;
         this.context = context;
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setOnPreparedListener(this);
-            //FOR RACK USE
-            //mediaPlayer.setDataSource(context, Uri.parse(URI + mid));
+            if(TEST_SETUP == 1) {
+                String path = "/sdcard/Download/test_320_audio.mp4";
+                File file = new File(path);
+                file.setReadable(true, false);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                mediaPlayer.setDataSource(fileInputStream.getFD());
+                fileInputStream.close();
+            } else{
+                if(type.equals("vod") || type.equals("aod"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI + mid));
+                else if(type.equals("bcv"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI_BCV + broadcast));
+                else if(type.equals("bca"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI_BCA + broadcast));
+                else if(type.equals("bcvChan"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI_BCV_CHANNEL + mid));
+                else if(type.equals("bcaChan"))
+                    mediaPlayer.setDataSource(context, Uri.parse(URI_BCA + mid));
 
-            //FOR EMULATOR USE
-            String path = "/sdcard/Download/test_320_audio.mp4";
-            File file = new File(path);
-            file.setReadable(true, false);
-            FileInputStream fileInputStream = new FileInputStream(file);
-            mediaPlayer.setDataSource(fileInputStream.getFD());
-            fileInputStream.close();
+            }
         } catch (Exception e) {
             Log.d(TAG, "Set Data Source Failed" + e.toString());
         }
@@ -82,7 +98,6 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        Log.v(TAG, "in on prepared");
         if (mediaPlayer == this.mediaPlayer) {
             try {
                 mediaPlayer.start();
@@ -184,7 +199,12 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
         track = 0;
         stopped = true;
         try {
-            mediaPlayer.setDataSource(context, Uri.parse(URI+mid));
+            if(mPlayType.equals("vod") || mPlayType.equals("aod"))
+                mediaPlayer.setDataSource(context, Uri.parse(URI + mid));
+            else if(mPlayType.equals("bcvChan"))
+                mediaPlayer.setDataSource(context, Uri.parse(URI_BCV_CHANNEL + mid));
+            else if(mPlayType.equals("bcaChan"))
+                mediaPlayer.setDataSource(context, Uri.parse(URI_BCA + mid));
             play();
         } catch (Exception e) {
             Log.d(TAG, e.toString());

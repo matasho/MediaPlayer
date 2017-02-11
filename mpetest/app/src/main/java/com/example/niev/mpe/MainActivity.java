@@ -12,12 +12,16 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private final String TAG = "MainActivity";
+    private static int TEST_SETUP = 0;  //1 = emulator,tablet 0 = rack
     private DrawerLayout drawerLayout;
     private int selected;
+    private String type = "test";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +50,47 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        switch (selected = menuItem.getItemId()) {
-            case R.id.nav_vod:
-                //setFragment(new VodFragment(), "vod_frag");
-                break;
-            case R.id.nav_aod:
-                //setFragment(new AodFragment(), "aod_frag");
-                break;
-            default:
+        if(TEST_SETUP == 0) {
+            switch (selected = menuItem.getItemId()) {
+                case R.id.nav_vod:
+                    type = "vod";
+                    setFragment(new VodFragment(), type);
+                    break;
+                case R.id.nav_aod:
+                    type = "aod";
+                    setFragment(new AodFragment(), type);
+                    break;
+                case R.id.nav_bcv:
+                    type = "bcv";
+                    setFragment(new VodFragment(), type);
+                    break;
+                case R.id.nav_bca:
+                    type = "bca";
+                    setFragment(new AodFragment(), type);
+                    break;
+                case R.id.nav_bcaChan:
+                    type = "bcaChan";
+                    setFragment(new AodFragment(), type);
+                    break;
+                case R.id.nav_bcvChan:
+                    type = "bcvChan";
+                    setFragment(new VodFragment(), type);
+                    break;
+                case R.id.nav_file:
+                    type = "file";
+                    setFragment(new VodFragment(), type);
+                    break;
+                default:
+            }
+            menuItem.setChecked(true);
         }
-        menuItem.setChecked(true);
         return true;
     }
 
     public void setFragment(Fragment fragment, String tag) {
-        // Insert fragment and replace any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frame, fragment, tag).commit();
+            // Insert fragment and replace any existing fragment;
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame, fragment, tag).commit();
     }
 
     @Override
@@ -89,5 +117,9 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public String getType(){
+        return type;
     }
 }

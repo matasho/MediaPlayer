@@ -14,7 +14,10 @@ import android.widget.TextView;
 
 
 public class VodFragment extends Fragment implements SurfaceHolder.Callback, View.OnClickListener {
+    private static final int TEST_SETUP = 0;
+    private static String URI_BCV_IP_PORT = "239.192.3.82:52226";
     private final String TAG = "VodFragment";
+    private String mPlayType;
     private Player player;
     public SurfaceView surfaceView;
     public SurfaceHolder surfaceHolder;
@@ -31,13 +34,25 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
         channelText = (TextView) v.findViewById(R.id.channel);
         trackText = (TextView) v.findViewById(R.id.track);
         language = (TextView) v.findViewById(R.id.lan);
-
-        //player = new Player(getActivity().getApplicationContext(), 53155, 1002);
-        player = new Player(getActivity().getApplicationContext(), 1001, 1005);
-
+        MainActivity mainActivity = (MainActivity) getActivity();
         surfaceView = (SurfaceView) v.findViewById(R.id.surfaceView);
-        //surfaceHolder = surfaceView.getHolder();
-        //surfaceHolder.addCallback(this);
+
+
+        int midStart = 1001;
+        int midEnd = 1006;
+
+        mPlayType = mainActivity.getType();
+        if (mPlayType.equals("bcvChan")) {
+            midStart = 0;
+            midEnd = 6;
+        }
+
+        if(TEST_SETUP == 0) {
+            surfaceHolder = surfaceView.getHolder();
+            surfaceHolder.addCallback(this);
+        }
+
+        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCV_IP_PORT, mPlayType);
 
         ViewGroup viewGroup = (ViewGroup) v.findViewById(R.id.linearLayout);
         setButtonListeners(viewGroup);
@@ -62,6 +77,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     public Player getPlayer() {
         return player;
     }
+
 
     public void onClick(View v) {
         Log.d(TAG, "onClick");
@@ -106,9 +122,12 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Log.d(TAG, "Surface created");
-        //player.setHolder(surfaceHolder);
-        //player.play();
-        //setInfo();
+
+        if(TEST_SETUP == 0) {
+            player.setHolder(surfaceHolder);
+            player.play();
+            setInfo();
+        }
     }
 
     @Override
@@ -125,7 +144,8 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     @Override
     public void onPause() {
         super.onPause();
-        player.pause();
+        if(mPlayType.equals("vod"))
+            player.pause();
         Log.d(TAG, "onPause");
     }
 

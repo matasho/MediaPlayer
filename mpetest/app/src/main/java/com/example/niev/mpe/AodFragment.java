@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 public class AodFragment extends Fragment implements View.OnClickListener {
     private final String TAG = "AodFragment";
+    private static final int TEST_SETUP = 0;
+    private static String URI_BCA_IP_PORT = "239.192.1.9:51128";
+    private String mPlayType;
     private Player player;
     private TextView channelText;
 
@@ -20,9 +23,18 @@ public class AodFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.aod_fragment, container, false);
         channelText = (TextView) v.findViewById(R.id.channel);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mPlayType = mainActivity.getType();
 
-        //player = new Player(getActivity().getApplicationContext(), 6583, 6587);
-        player = new Player(getActivity().getApplicationContext(), 21001, 21005);
+        int midStart = 21001;
+        int midEnd = 21006;
+
+        if(mPlayType.equals("bcaChan")){
+            midStart = 0;
+            midEnd = 6;
+        }
+
+        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCA_IP_PORT, mPlayType);
 
         ViewGroup viewGroup = (ViewGroup) v.findViewById(R.id.linearLayout);
         setButtonListeners(viewGroup);
@@ -73,6 +85,7 @@ public class AodFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         if (player != null){
+            Log.v(TAG, "in onResume");
             player.play();
             channelText.setText(Integer.toString(player.getMid()));
         }
@@ -81,7 +94,8 @@ public class AodFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-        player.pause();
+        if(mPlayType.equals("aod"))
+            player.pause();
         Log.d(TAG, "onPause");
     }
 

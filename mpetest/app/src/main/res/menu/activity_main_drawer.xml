@@ -7,5 +7,20 @@
         <item
             android:id="@+id/nav_aod"
             android:title="AOD" />
+        <item
+            android:id="@+id/nav_bcv"
+            android:title="BCV" />
+        <item
+            android:id="@+id/nav_bca"
+            android:title="BCA" />
+        <item
+            android:id="@+id/nav_bcaChan"
+            android:title="BCA-Chan" />
+        <item
+            android:id="@+id/nav_bcvChan"
+            android:title="BCV-Chan" />
+        <item
+            android:id="@+id/nav_file"
+            android:title="BCV-Chan" />
     </group>
 </menu>
