@@ -3,7 +3,7 @@ package com.example.niev.mpe;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +56,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
             surfaceHolder.addCallback(this);
         }
 
-        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCV_IP_PORT, mPlayType);
+        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCV_IP_PORT, mPlayType, getActivity());
 
 
 
@@ -147,7 +147,11 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     private void setInfo() {
         channelText.setText(Integer.toString(player.getMid()));
         trackText.setText(Integer.toString(player.getTrack()));
-        language.setText(player.getLanguage());
+        //language.setText(player.getLanguage());
+    }
+
+    public void setTextIntoView(String message) {
+        language.setText(message);
     }
 
     @Override

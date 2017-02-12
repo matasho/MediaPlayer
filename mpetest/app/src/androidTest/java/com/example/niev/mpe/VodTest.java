@@ -8,6 +8,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,6 @@ import java.io.FileInputStream;
 import static org.junit.Assert.*;
 
 
-
 /**
  * Instrumentation test, which will execute on an Android device.
  *
@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
 @SmallTest
 public class VodTest {
     private static final String TAG = VodTest.class.getSimpleName();
-    private static int TEST_SETUP = 0;  //1 = emulator,tablet 0 = rack
+    private static int TEST_SETUP = 1;  //1 = emulator,tablet 0 = rack
     private static String URI_MID = "1001";
     private static String URI_AVOD = "pac_rtsp://mid:";
 
@@ -59,7 +59,7 @@ public class VodTest {
         mediaPlayer.release();
     }
 
-    @Test
+    /*@Test
     public void playBCVTest() throws Exception {
         if(TEST_SETUP == 0){
             SurfaceHolder mSurfaceHolder;
@@ -98,8 +98,8 @@ public class VodTest {
             }
         }
     }
-/*
 
+*/
     @Test
     public void playVODSeekTest() throws Exception {
         SurfaceHolder mSurfaceHolder;
@@ -152,7 +152,7 @@ public class VodTest {
         }
 
     }
-
+/*
     @Test
     public void playVODTrackTest() throws Exception{
 

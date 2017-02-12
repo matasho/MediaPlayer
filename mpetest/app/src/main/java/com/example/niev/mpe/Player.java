@@ -1,9 +1,13 @@
 package com.example.niev.mpe;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -15,7 +19,7 @@ import java.io.IOException;
  * Created by niev on 10/6/2016.
  */
 
-public class Player implements MediaPlayer.OnPreparedListener {
+public class Player implements MediaPlayer.OnPreparedListener{
     private static final int TEST_SETUP = 1;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
@@ -60,7 +64,7 @@ public class Player implements MediaPlayer.OnPreparedListener {
     };
 
 
-    Player(Context context, int start, int end, String broadcast, String type) {
+    Player(Context context, int start, int end, String broadcast, String type, @Nullable Activity parentActivity) {
         this.start = start;
         this.end = end;
         mid = start;
@@ -68,6 +72,13 @@ public class Player implements MediaPlayer.OnPreparedListener {
         track = 0;
         stopped = true;
         this.context = context;
+
+        Fragment currentFragment = parentActivity.getFragmentManager().findFragmentByTag("vod");
+        if(currentFragment instanceof VodFragment)
+            Log.v(TAG,"test");
+
+
+
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setOnPreparedListener(this);

@@ -1,7 +1,7 @@
 package com.example.niev.mpe;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +34,7 @@ public class AodFragment extends Fragment implements View.OnClickListener {
             midEnd = 6;
         }
 
-        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCA_IP_PORT, mPlayType);
+        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCA_IP_PORT, mPlayType, null);
 
         ViewGroup viewGroup = (ViewGroup) v.findViewById(R.id.linearLayout);
         setButtonListeners(viewGroup);

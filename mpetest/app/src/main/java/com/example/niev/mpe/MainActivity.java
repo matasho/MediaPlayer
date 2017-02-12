@@ -1,8 +1,8 @@
 package com.example.niev.mpe;
 
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -93,35 +93,10 @@ public class MainActivity extends AppCompatActivity
 
     public void setFragment(Fragment fragment, String tag) {
             // Insert fragment and replace any existing fragment;
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame, fragment, tag).commit();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("e", Integer.toString(keyCode));
-        Player player;
-        if (selected == R.id.nav_vod)
-            player = ((VodFragment) getSupportFragmentManager().findFragmentByTag(Integer.toString(selected))).getPlayer();
-        else
-            player = ((AodFragment) getSupportFragmentManager().findFragmentByTag(Integer.toString(selected))).getPlayer();
-
-        switch (keyCode) {
-            case 85: // Pause/play
-                if (player.isPlaying())
-                    player.pause();
-                else
-                    player.play();
-                break;
-            case 166: // Channel up
-                player.channelUp();
-                break;
-            case 167: // Channel down
-                player.channelDown();
-                break;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     public String getType(){
         return type;
