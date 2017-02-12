@@ -15,7 +15,7 @@ import java.io.IOException;
  * Created by niev on 10/6/2016.
  */
 
-public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListener {
+public class Player implements MediaPlayer.OnPreparedListener {
     private static final int TEST_SETUP = 1;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
@@ -48,14 +48,14 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
         public void run() {
             if(seekState.equals("fwd")) {
                 Log.v(TAG, "forwarding!");
-                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 1000);
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 10000);
             }
             else if(seekState.equals("rew")){
                 Log.v(TAG, "rewinding!");
-                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 1000);
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 10000);
             }
             Log.v(TAG, "***CurrentPosition: " + Integer.toString(mediaPlayer.getCurrentPosition()));
-            mHandler.postDelayed(this, 2000);
+            mHandler.postDelayed(this, 3000);
         }
     };
 
@@ -122,6 +122,14 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
 
     public boolean isPlaying() {
         return mediaPlayer.isPlaying();
+    }
+
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    public int getDuration() {
+        return mediaPlayer.getDuration();
     }
 
     public void play() {
@@ -240,6 +248,10 @@ public class Player extends MediaPlayer implements MediaPlayer.OnPreparedListene
 
     public void pause() {
         mediaPlayer.pause();
+    }
+
+    public void seekBarSeekTo(int percent) {
+        mediaPlayer.seekTo(percent * mediaPlayer.getDuration());
     }
 
 }

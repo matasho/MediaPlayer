@@ -1,6 +1,7 @@
 package com.example.niev.mpe;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 
@@ -24,6 +26,8 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     private TextView trackText;
     private TextView channelText;
     private TextView language;
+    private SeekBar mSeekBar;
+
 
 
 
@@ -54,8 +58,35 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
 
         player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCV_IP_PORT, mPlayType);
 
+
+
         ViewGroup viewGroup = (ViewGroup) v.findViewById(R.id.linearLayout);
         setButtonListeners(viewGroup);
+
+        //SeekBar
+        mSeekBar = (SeekBar) v.findViewById(R.id.seekBar);
+        mSeekBar.setVisibility(View.GONE);
+        mSeekBar.setMax(100);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+            int progressBar;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser)
+                    progressBar = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.v(TAG, "onStopTrackingTouch: " + Integer.toString(progressBar));
+                player.seekBarSeekTo(progressBar);
+            }
+        });
 
 
         return v;
@@ -123,10 +154,26 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Log.d(TAG, "Surface created");
 
+        final Handler handler = new Handler();
+        Runnable seekBarRunnable = new Runnable() {
+            @Override
+            public void run()
+            {
+                float trackTime = ((float)player.getCurrentPosition() / player.getDuration())*100;
+                Log.v(TAG, "current position:" + Integer.toString(player.getCurrentPosition()) + " duration: " + Integer.toString(player.getDuration()));
+                mSeekBar.setProgress((int)trackTime);
+                handler.postDelayed(this, 1000);
+            }
+        };
+
         if(TEST_SETUP == 0) {
             player.setHolder(surfaceHolder);
             player.play();
             setInfo();
+            if(mPlayType.equals("vod") || mPlayType.equals("aod")){
+                mSeekBar.setVisibility(View.VISIBLE);
+                handler.postDelayed(seekBarRunnable, 1000);
+            }
         }
     }
 
