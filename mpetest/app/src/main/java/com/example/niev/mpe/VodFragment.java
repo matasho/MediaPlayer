@@ -2,7 +2,6 @@ package com.example.niev.mpe;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -105,11 +104,6 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
         }
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-
     public void onClick(View v) {
         Log.d(TAG, "onClick");
         switch (v.getId()) {
@@ -147,7 +141,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     private void setInfo() {
         channelText.setText(Integer.toString(player.getMid()));
         trackText.setText(Integer.toString(player.getTrack()));
-        //language.setText(player.getLanguage());
+        language.setText(player.getLanguage());
     }
 
     public void setTextIntoView(String message) {
@@ -163,10 +157,11 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
             @Override
             public void run()
             {
-                float trackTime = ((float)player.getCurrentPosition() / player.getDuration())*100;
+                float trackTime = ((float) player.getCurrentPosition() / player.getDuration()) * 100;
                 Log.v(TAG, "current position:" + Integer.toString(player.getCurrentPosition()) + " duration: " + Integer.toString(player.getDuration()));
-                mSeekBar.setProgress((int)trackTime);
+                mSeekBar.setProgress((int) trackTime);
                 handler.postDelayed(this, 1000);
+
             }
         };
 

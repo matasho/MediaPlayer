@@ -19,7 +19,7 @@ import java.io.IOException;
  * Created by niev on 10/6/2016.
  */
 
-public class Player implements MediaPlayer.OnPreparedListener{
+public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener{
     private static final int TEST_SETUP = 1;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
@@ -29,6 +29,7 @@ public class Player implements MediaPlayer.OnPreparedListener{
     private static final String URI_FILEPLAY = "pac_rtp://file:test.mpg";
     private static final String URI_HDMI = "pac_rtp://hdmi";
     private MediaPlayer mediaPlayer;
+    private VodFragment mVodFragment;
     private int mid;
     private int start;
     private int end;
@@ -75,15 +76,16 @@ public class Player implements MediaPlayer.OnPreparedListener{
 
         Fragment currentFragment = parentActivity.getFragmentManager().findFragmentByTag("vod");
         if(currentFragment instanceof VodFragment)
-            Log.v(TAG,"test");
+            mVodFragment = (VodFragment)currentFragment;
 
 
 
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnCompletionListener(this);
         try {
             mediaPlayer.setOnPreparedListener(this);
             if(TEST_SETUP == 1) {
-                String path = "/sdcard/Download/test_320_audio.mp4";
+                String path = "/sdcard/Download/test_short_320.mp4";
                 File file = new File(path);
                 file.setReadable(true, false);
                 FileInputStream fileInputStream = new FileInputStream(file);
@@ -265,4 +267,9 @@ public class Player implements MediaPlayer.OnPreparedListener{
         mediaPlayer.seekTo(percent * mediaPlayer.getDuration());
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayerComplete) {
+        mVodFragment.setTextIntoView("EOS");
+
+    }
 }
