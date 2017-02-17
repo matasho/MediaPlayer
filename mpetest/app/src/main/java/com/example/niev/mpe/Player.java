@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 
 public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener{
-    private static final int TEST_SETUP = 1;
+    private static final int TEST_SETUP = 0;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
     private static String URI_BCV = "pac_rtp://";
@@ -74,10 +74,14 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
         stopped = true;
         this.context = context;
 
-        Fragment currentFragment = parentActivity.getFragmentManager().findFragmentByTag("vod");
-        if(currentFragment instanceof VodFragment)
-            mVodFragment = (VodFragment)currentFragment;
+        switch(type){
+            case "vod":
+                Fragment currentFragment = parentActivity.getFragmentManager().findFragmentByTag("vod");
+                if(currentFragment instanceof VodFragment)
+                    mVodFragment = (VodFragment)currentFragment;
+                break;
 
+        }
 
 
         mediaPlayer = new MediaPlayer();
@@ -85,7 +89,7 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
         try {
             mediaPlayer.setOnPreparedListener(this);
             if(TEST_SETUP == 1) {
-                String path = "/sdcard/Download/test_short_320.mp4";
+                String path = "/sdcard/Download/test_320_audio.mp4";
                 File file = new File(path);
                 file.setReadable(true, false);
                 FileInputStream fileInputStream = new FileInputStream(file);
@@ -200,25 +204,32 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
         if(trackInfo[track].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_SUBTITLE){
             mediaPlayer.deselectTrack(track);
         }
-        track++;
         if (track < getTotalTracks()) {
+            track++;
             try {
+                Log.v(TAG, "trackUp: selectTrack " + Integer.toString(track));
                 mediaPlayer.selectTrack(track);
             } catch (Exception e) {
                 Log.d(TAG, e.toString());
             }
         }
-        else {
-            track = 0;
-            mediaPlayer.selectTrack(track);
-        }
-
-
 
     }
 
     public void trackDown() {
-
+        Log.v(TAG, "Lenght of track info:" + Integer.toString(getTotalTracks()));
+        if(trackInfo[track].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_SUBTITLE){
+            mediaPlayer.deselectTrack(track);
+        }
+        if (track > 0) {
+            track--;
+            try {
+                Log.v(TAG, "trackUp: selectTrack " + Integer.toString(track));
+                mediaPlayer.selectTrack(track);
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        }
     }
 
     public void changeSource() {
@@ -264,7 +275,7 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
     }
 
     public void seekBarSeekTo(int percent) {
-        mediaPlayer.seekTo(percent * mediaPlayer.getDuration());
+        mediaPlayer.seekTo((percent * mediaPlayer.getDuration())/100);
     }
 
     @Override

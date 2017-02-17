@@ -34,7 +34,7 @@ public class AodFragment extends Fragment implements View.OnClickListener {
             midEnd = 6;
         }
 
-        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCA_IP_PORT, mPlayType, null);
+        player = new Player(getActivity().getApplicationContext(), midStart, midEnd, URI_BCA_IP_PORT, mPlayType, getActivity());
 
         ViewGroup viewGroup = (ViewGroup) v.findViewById(R.id.linearLayout);
         setButtonListeners(viewGroup);

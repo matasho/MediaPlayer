@@ -27,6 +27,18 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     private TextView language;
     private SeekBar mSeekBar;
 
+    private Handler mHandler = new Handler();
+    Runnable mSeekBarRunnable = new Runnable() {
+        @Override
+        public void run()
+        {
+            float trackTime = ((float) player.getCurrentPosition() / player.getDuration()) * 100;
+            Log.v(TAG, "current position:" + Integer.toString(player.getCurrentPosition()) + " duration: " + Integer.toString(player.getDuration()));
+            mSeekBar.setProgress((int) trackTime);
+            mHandler.postDelayed(this, 1000);
+
+        }
+    };
 
 
 
@@ -152,18 +164,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Log.d(TAG, "Surface created");
 
-        final Handler handler = new Handler();
-        Runnable seekBarRunnable = new Runnable() {
-            @Override
-            public void run()
-            {
-                float trackTime = ((float) player.getCurrentPosition() / player.getDuration()) * 100;
-                Log.v(TAG, "current position:" + Integer.toString(player.getCurrentPosition()) + " duration: " + Integer.toString(player.getDuration()));
-                mSeekBar.setProgress((int) trackTime);
-                handler.postDelayed(this, 1000);
 
-            }
-        };
 
         if(TEST_SETUP == 0) {
             player.setHolder(surfaceHolder);
@@ -171,7 +172,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
             setInfo();
             if(mPlayType.equals("vod") || mPlayType.equals("aod")){
                 mSeekBar.setVisibility(View.VISIBLE);
-                handler.postDelayed(seekBarRunnable, 1000);
+                mHandler.postDelayed(mSeekBarRunnable, 1000);
             }
         }
     }
@@ -199,6 +200,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
+        mHandler.removeCallbacks(mSeekBarRunnable);
         player.release();
         player = null;
     }
