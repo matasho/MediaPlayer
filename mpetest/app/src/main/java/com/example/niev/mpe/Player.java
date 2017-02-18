@@ -29,6 +29,10 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
     private static final String URI_FILEPLAY = "pac_rtp://file:test.mpg";
     private static final String URI_HDMI = "pac_rtp://hdmi";
     private MediaPlayer mediaPlayer;
+
+    private MediaPlayer nextMediaPlayer;
+    private boolean mNextFlag = true;
+
     private VodFragment mVodFragment;
     private int mid;
     private int start;
@@ -85,16 +89,20 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
 
 
         mediaPlayer = new MediaPlayer();
+        nextMediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(this);
         try {
             mediaPlayer.setOnPreparedListener(this);
             if(TEST_SETUP == 1) {
-                String path = "/sdcard/Download/test_320_audio.mp4";
+                String path = "/sdcard/Download/test_short_320.mp4";
                 File file = new File(path);
                 file.setReadable(true, false);
                 FileInputStream fileInputStream = new FileInputStream(file);
                 mediaPlayer.setDataSource(fileInputStream.getFD());
                 fileInputStream.close();
+
+                mediaPlayer.setNextMediaPlayer(nextMediaPlayer);
+
             } else{
                 if(type.equals("vod") || type.equals("aod"))
                     mediaPlayer.setDataSource(context, Uri.parse(URI + mid));
@@ -110,6 +118,8 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
                     mediaPlayer.setDataSource(context, Uri.parse(URI_FILEPLAY));
                 else if(type.equals("hdmi"))
                     mediaPlayer.setDataSource(context, Uri.parse(URI_HDMI));
+                else if(type.equals("next"))
+                    mNextFlag = true;
 
             }
         } catch (Exception e) {
@@ -121,15 +131,40 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        if (mediaPlayer == this.mediaPlayer) {
+
+        if(mNextFlag){
+
+            if (mediaPlayer == this.mediaPlayer) {
+                try {
+                    mediaPlayer.start();
+                    setTotalTracks();
+                    stopped = false;
+                } catch (Exception e) {
+                    Log.d(TAG, e.toString());
+                }
+            }
+
             try {
-                mediaPlayer.start();
-                setTotalTracks();
-                stopped = false;
-            } catch (Exception e) {
-                Log.d(TAG, e.toString());
+                nextMediaPlayer.setOnCompletionListener(this);
+
+                if(TEST_SETUP == 1) {
+                    String path = "/sdcard/Download/1.mp3";
+                    File file = new File(path);
+                    file.setReadable(true, false);
+                    FileInputStream fileInputStream = new FileInputStream(file);
+                    nextMediaPlayer.setDataSource(fileInputStream.getFD());
+                    fileInputStream.close();
+                } else {
+                    nextMediaPlayer.setDataSource(context, Uri.parse(URI + "62862"));
+                }
+
+                nextMediaPlayer.prepare();
+                mNextFlag = false;
+            } catch(Exception e) {
+                Log.d(TAG, "Set Data Source Failed" + e.toString());
             }
         }
+
     }
 
     public void setHolder(SurfaceHolder surfaceHolder) {
@@ -281,6 +316,8 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
     @Override
     public void onCompletion(MediaPlayer mediaPlayerComplete) {
         mVodFragment.setTextIntoView("EOS");
+        Log.v(TAG, "mediaPlayerCompleteDuration: " + Integer.toString(mediaPlayerComplete.getDuration()));
+        nextMediaPlayer.start();
 
     }
 }
