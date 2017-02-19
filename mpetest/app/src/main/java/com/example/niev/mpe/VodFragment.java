@@ -27,7 +27,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     private TextView language;
     private SeekBar mSeekBar;
 
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
     Runnable mSeekBarRunnable = new Runnable() {
         @Override
         public void run()
@@ -46,6 +46,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.vod_fragment, container, false);
+        mHandler = new Handler();
         channelText = (TextView) v.findViewById(R.id.channel);
         trackText = (TextView) v.findViewById(R.id.track);
         language = (TextView) v.findViewById(R.id.lan);
@@ -170,7 +171,7 @@ public class VodFragment extends Fragment implements SurfaceHolder.Callback, Vie
             player.setHolder(surfaceHolder);
             player.play();
             setInfo();
-            if(mPlayType.equals("vod") || mPlayType.equals("aod")){
+            if(mPlayType.equals("vod") || mPlayType.equals("aod") || mPlayType.equals("next")){
                 mSeekBar.setVisibility(View.VISIBLE);
                 mHandler.postDelayed(mSeekBarRunnable, 1000);
             }

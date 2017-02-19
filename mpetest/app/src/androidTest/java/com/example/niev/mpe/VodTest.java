@@ -101,7 +101,7 @@ public class VodTest {
 
 */
     @Test
-    public void playVODSeekTest() throws Exception {
+    public void playVODSeekAndCompleteTest() throws Exception {
         SurfaceHolder mSurfaceHolder;
         VodFragment vodFragment = new VodFragment();
         mMainActivity.setFragment(vodFragment, "nav_vod");
@@ -121,6 +121,7 @@ public class VodTest {
             }
 
             mediaPlayer.setScreenOnWhilePlaying(true);
+
             mediaPlayer.prepare();
             mediaPlayer.start();
             assertTrue(mediaPlayer.isPlaying());
@@ -152,6 +153,7 @@ public class VodTest {
         }
 
     }
+
 /*
     @Test
     public void playVODTrackTest() throws Exception{

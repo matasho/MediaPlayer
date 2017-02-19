@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 
 public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener{
-    private static final int TEST_SETUP = 0;
+    private static final int TEST_SETUP = 1;
     private final String TAG = "Player";
     private final String URI = "pac_rtsp://mid:";
     private static String URI_BCV = "pac_rtp://";
@@ -31,7 +31,7 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
     private MediaPlayer mediaPlayer;
 
     private MediaPlayer nextMediaPlayer;
-    private boolean mNextFlag = true;
+    private boolean mNextFlag = false;
 
     private VodFragment mVodFragment;
     private int mid;
@@ -77,10 +77,16 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
         track = 0;
         stopped = true;
         this.context = context;
+        Fragment currentFragment;
 
         switch(type){
+            case "next":
+                currentFragment = parentActivity.getFragmentManager().findFragmentByTag("next");
+                if(currentFragment instanceof VodFragment)
+                    mVodFragment = (VodFragment)currentFragment;
+                break;
             case "vod":
-                Fragment currentFragment = parentActivity.getFragmentManager().findFragmentByTag("vod");
+                currentFragment = parentActivity.getFragmentManager().findFragmentByTag("vod");
                 if(currentFragment instanceof VodFragment)
                     mVodFragment = (VodFragment)currentFragment;
                 break;
@@ -89,8 +95,13 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
 
 
         mediaPlayer = new MediaPlayer();
-        nextMediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(this);
+
+        if(type.equals("next")) {
+            nextMediaPlayer = new MediaPlayer();
+            mNextFlag = true;
+        }
+
         try {
             mediaPlayer.setOnPreparedListener(this);
             if(TEST_SETUP == 1) {
@@ -100,8 +111,6 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
                 FileInputStream fileInputStream = new FileInputStream(file);
                 mediaPlayer.setDataSource(fileInputStream.getFD());
                 fileInputStream.close();
-
-                mediaPlayer.setNextMediaPlayer(nextMediaPlayer);
 
             } else{
                 if(type.equals("vod") || type.equals("aod"))
@@ -118,10 +127,9 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
                     mediaPlayer.setDataSource(context, Uri.parse(URI_FILEPLAY));
                 else if(type.equals("hdmi"))
                     mediaPlayer.setDataSource(context, Uri.parse(URI_HDMI));
-                else if(type.equals("next"))
-                    mNextFlag = true;
 
             }
+            mediaPlayer.setNextMediaPlayer(nextMediaPlayer);
         } catch (Exception e) {
             Log.d(TAG, "Set Data Source Failed" + e.toString());
         }
@@ -132,18 +140,17 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
 
-        if(mNextFlag){
-
-            if (mediaPlayer == this.mediaPlayer) {
-                try {
-                    mediaPlayer.start();
-                    setTotalTracks();
-                    stopped = false;
-                } catch (Exception e) {
-                    Log.d(TAG, e.toString());
-                }
+        if (mediaPlayer == this.mediaPlayer) {
+            try {
+                mediaPlayer.start();
+                setTotalTracks();
+                stopped = false;
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
             }
+        }
 
+        if(mNextFlag){
             try {
                 nextMediaPlayer.setOnCompletionListener(this);
 
@@ -157,7 +164,6 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
                 } else {
                     nextMediaPlayer.setDataSource(context, Uri.parse(URI + "62862"));
                 }
-
                 nextMediaPlayer.prepare();
                 mNextFlag = false;
             } catch(Exception e) {
@@ -317,7 +323,12 @@ public class Player implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCom
     public void onCompletion(MediaPlayer mediaPlayerComplete) {
         mVodFragment.setTextIntoView("EOS");
         Log.v(TAG, "mediaPlayerCompleteDuration: " + Integer.toString(mediaPlayerComplete.getDuration()));
-        nextMediaPlayer.start();
+
+        if(mPlayType.equals("next")){
+            nextMediaPlayer.start();
+        } else{
+            mediaPlayer.start();
+        }
 
     }
 }

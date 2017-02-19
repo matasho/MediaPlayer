@@ -84,6 +84,10 @@ public class MainActivity extends AppCompatActivity
                     type = "hdmi";
                     setFragment(new VodFragment(), type);
                     break;
+                case R.id.nav_next:
+                    type = "next";
+                    setFragment(new VodFragment(), type);
+                    break;
                 default:
             }
             menuItem.setChecked(true);
